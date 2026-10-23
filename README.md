@@ -1,5 +1,7 @@
 # dsh-session-rewind
 
+**English** | [中文](./docs/zh/README.md)
+
 **Rewind the conversation you are in — same session, no fork, no new tab.**
 
 [![DSH](https://img.shields.io/badge/DSH-%3E%3D0.2.0-2F6BFF)](https://github.com/deepseek-dsh/dsh-desktop) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license)
