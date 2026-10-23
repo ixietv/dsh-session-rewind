@@ -1,7 +1,7 @@
-# dsh-session-rewind — 构建与可安装性验证报告（r4 为准；§1–§10 = r2，§11 = r3 历史）
+# dsh-session-rewind — 构建与可安装性验证报告（r5 为准；§1–§10 = r2，§11 = r3 历史，§12 = r4）
 
-> **当前有效裁决 = §12（r4，task `t22`）**，绑定 t19（宿主 `upto=` + 4 个 low 修复）+ t20（客户端闭区间 F1 修复）+ t21（design 勘误）之后的字节。
-> §11 是 r3（task `t16`）裁决，绑定 t13/t14/t15 字节；§1–§10 是 r2（task `t10`）fork 形态字节的历史记录。两份都**不再覆盖当前实现**，保留仅供追溯（r3→r4 差异见 §12.7）。
+> **当前有效字节绑定 = §13（r5，代码评审修复轮）**，绑定评审 H-1（两判据守卫）/ H-2（`sessions` 注入 + store 缺失前置拒绝）/ M-3（多容器作用域）/ L-1（哨兵 `Map.has`）/ M-2（`tests/` 收编）落地之后的当前盘上字节。**§13 是实现方自验，不是独立 verifier 裁决**（身份说明见 §13.0）。
+> §12（r4，task `t22`）仍是对 *其自身字节表*（§12.1）的有效独立裁决，但那份字节已被本轮修改，r4 结论不再覆盖当前实现。§11 是 r3（task `t16`）裁决，绑定 t13/t14/t15 字节；§1–§10 是 r2（task `t10`）fork 形态字节的历史记录。三份都**不再覆盖当前实现**，保留仅供追溯（r3→r4 差异见 §12.7，r4→r5 差异见 §13.2）。
 
 - 验证者：verifier（team `rewind-plugin-squad`；r2 = `t10` attempt `db9acd2e-…`；r3 = `t16` attempt `a9f8899d-…`；r4 = `t22` attempt `727450a0-8239-4caa-9fcc-373d54986706`）
 - 验证对象：`C:\Users\i_xie_tv\.dsh\plugins\dsh-session-rewind`
@@ -671,3 +671,72 @@ sha256sum plugins/dsh-session-rewind/{package.json,cordis.patch.yml} \
 ```
 
 
+
+---
+
+## 13. r5 —— 代码评审修复轮（实现方自验）
+
+### 13.0 身份与边界（先读这条）
+
+- 本节由**实现方**（主会话接管 Software Architect 专家的中断运行后完成收尾）撰写并自验，**不是独立 verifier 裁决**，无 task/attempt 编号可引用。r4（§12）的 PASS 仅约束 §12.1 那套字节；本轮改动之后，独立评审请按 §13.3 的命令重放全部证据再落裁决。
+- 改动来源 = 上一轮代码评审的六项发现（H-1、H-2、M-1、M-2、M-3、L-1/L-2/L-4 低项），逐项映射见 §13.2。
+- 验证边界与 r2 相同：**只读实现仓、未执行安装、未动 profile**。`tests/` 为本轮新增的交付物（此前 harness 都在仓外 `.probe`，评审 M-2 项）。
+
+### 13.1 字节绑定（当前盘上字节）
+
+| 文件 | 大小 / 行数 | sha256（r5） | r4 记录 | 变化 |
+|---|---|---|---|---|
+| `lib/host.js` | 34939 B / 846 行 | `476fe384c998a3a521121002ceb97e802a5e1d7e248b2f8be5264e05450eeaae` | `e8c0ac1b…` / 22195 B / 590 行 | H-1 双判据守卫 + H-2 注入与前置拒绝 |
+| `lib/client.js` | 51643 B / 1191 行 | `fbc98920e58ea9755a6bef873d35357a80cde6a2675f27ca2a710091068d62cd` | `efe9bb27…` / 41005 B / 984 行 | M-3 多容器作用域 + L-1 哨兵 + clearMark 注释 |
+| `package.json` | 1104 B / 36 行 | `0af071757d1b96bfc04abaeb73959f34f89acd79732f4ce21783868ed72b12df` | 见 §12.1 | 新增 `scripts.test` / `scripts.test:inline`；exports 四键、files、dsh 段逐字未动 |
+| `cordis.patch.yml` | 424 B / 10 行 | `53a4e5db30de76360c8c34829cf9eaa2b7c07f6b61207c92ec5ff816d00df617` | 同 | **逐字节未变** |
+| `docs/design.md` | 45199 B / 458 行 | `8a4a53b938c73f3efe73f1e79dca4a42a95c6055cd09df77ee72b2501d949fed` | 443 行（r2 记录）| 未改动；行数差异为历史绑定的陈旧值，本轮按实测重记（即评审 M-1 的文档漂移本身） |
+| `LICENSE` | — | 版权行改 `ixietv <2047727349@qq.com>`（评审 L-4） | 裸邮箱 | 低项 |
+| `tests/README.md` | 3826 B / 58 行 | `2be863fc1e6323936ff39268af0e103e9fb0bfcaec6b0e2b8c4dd0d7ace232ba` | 无 | 新增（M-2） |
+| `tests/host.test.mjs` | 23156 B / 477 行 | `77a441ef9d340a4d36a55186a3dcb6544353d926b879ab11c29a562edaa77219` | 无 | 新增（M-2），含 H-1 幽灵路径 3 例 |
+| `tests/client.test.mjs` | 16241 B / 352 行 | `f65677d37e6c896c0197c757855da691dd0bc7b47654245e9c2fd149de78ecf8` | 无 | 新增（M-2） |
+| `tests/contract.test.mjs` | 9828 B / 185 行 | `ab09d3b2ca396f96cff36ead7f5be9ef5519219089d06ad7a860c71dfd34e356` | 无 | 新增（M-2），跨端 notice 契约 6 例 |
+| `tests/helpers/session.mjs` | 6743 B / 188 行 | `e0b9d9e18a60f1e173e1cfdf28c469c10c95b9fede4ec3207f844bf76c382024` | 无 | 新增：surface 投影按官方 `applySurfacePlan` 语义重建 |
+| `tests/helpers/dom.mjs` | 6771 B / 203 行 | `c3c69b0946b0a72122e398ab71f799424d64133a569a02cfbe88452c66c71e6c` | 无 | 新增：fake DOM + Module Loader 装载器 |
+| `docs/verification.md` | 本文件 | 追加本节后的哈希请自行复算（§13.3），不为自身哈希背书 | — | — |
+| `.gitattributes` | 新增 | `* text=auto eol=lf` — 本机 `core.autocrlf=true`，不锁 LF 则新克隆的工作区字节与本表 sha256 失配（r5 绑定可重放的前提） | 无 |
+
+### 13.2 变更 ↔ 评审项映射
+
+| 评审项 | 落点 | 摘要 |
+|---|---|---|
+| H-1 | `lib/host.js` `computeSpan(nodes, turnStartSeq, events, targetTurn)` | 判据①：span 全为自家 rewind checkpoint → `alreadyRewound`；判据②：span 内任一被吞 checkpoint 的 `turn=<c>` 满足 `c < targetTurn` → `alreadyRewound`（否则区间塌缩、旧隐藏行复发=幽灵路径，接管后实测复现并封堵）。`c >= targetTurn`（同一切点重切/深层回退）放行。`isRewindCheckpoint` 三重判别（type + replace-origin + `source.kind==='user'` + notice token）保 B4 compaction checkpoint 可随区间折叠。 |
+| H-2 | `lib/host.js` `inject=['commands','sessions']` + `resolveStore` | store 缺失在 **append 之前**拒绝（新文案 `storeMissing`，明说 "Nothing was changed"，不谎称已回退）；`flush()===false` / 抛错仍如实 `PERSIST_FAILED`。 |
+| M-1 | 本节 + 头部裁决指针改 §13 | 陈旧字节表按实测重绑；r2 记载 design.md 443 行与当前 458 行的漂移如实记录。 |
+| M-2 | `tests/`（58+477+352+185+188+203 行） | harness 收编入仓；`npm test`（默认隔离）/ `npm run test:inline`（受限沙箱，spawn EPERM 实测）。 |
+| M-3 | `lib/client.js` `bindings/owners/hiddenByUs(WeakMap)`、`reconcileContainer`、`adoptContainer`、`containerForOwner`、`visibleMaxTurn(scope,owner)` | 隐藏区间与容器一一绑定；document 级扫描只用于**登记**新容器不再直接改写；读不到容器时兜底退化为只藏 `cutTurn`，绝不猜全局值。 |
+| L-1/L-2/L-4 | `markCache` 哨兵 `null`+`Map.has`；`clearMark` 注明外部 API；LICENSE 版权行 | 低项。 |
+
+### 13.3 r5 复现命令
+
+```bash
+cd E:/.dshD盘工作区/dsh-session-rewind
+
+node --check lib/host.js            # exit 0
+node --check lib/client.js          # exit 0
+
+# 受限沙箱（禁 spawn）用 inline 通道；正常机器用 npm test，两者覆盖同一集合
+node --experimental-test-isolation=none --test tests/host.test.mjs tests/client.test.mjs tests/contract.test.mjs
+
+# 字节指纹（与 §13.1 对照；含本文件自身则把 docs/verification.md 加进列表）
+node -e "const{createHash}=require('crypto'),{readFileSync}=require('fs');for(const f of ['lib/host.js','lib/client.js','package.json','cordis.patch.yml','docs/design.md']){console.log(f,createHash('sha256').update(readFileSync(f)).digest('hex'))}"
+```
+
+### 13.4 测试结果（自验运行记录）
+
+- `node --check` 双入口：**exit 0**。
+- `node --experimental-test-isolation=none --test …`：**50 tests / 50 pass / 0 fail**（r4 的外部 harness 15+13 项语义被 `tests/` 覆盖并扩充；H-1 新增幽灵路径拒绝 + 两个放行侧共 3 例）。
+- 关键回归全绿：F1 闭区间 ×4、B4 compaction 可折叠、B6 更早处再回退成功、H-2 store 缺失/flush false/flush throw、M-3 双视图互不干扰、跨端 `turn=`/`upto=` 契约 ×6、硬约束（无 fork/openSession、仅 `require('react')`、exports 四键、不写 `commit()`、append-only 前缀比对）。
+
+### 13.5 仍未验证（r5 边界，沿用 §12.9 并追加）
+
+| # | 未验证项 | 说明 |
+|---|---|---|
+| U-1…U-7 | 同 §12.9 | 安装、真实浏览器、真实 SessionStore 持久性、真实 Cordis 挂载、跨页面重建、PERSIST 不一致窗口、真实 compaction 交叠 —— 均未因本轮改变。 |
+| U-8 | 幽灵判据对 **notice 文本契约** 的依赖 | 判据②从 span 内 checkpoint 的文本解析 `turn=<c>`；若未来改动 notice 模板，`isRewindCheckpoint` 的 token 判别会静默失效。`tests/contract.test.mjs` 的模板逐字断言是当前的防线。 |
+| U-9 | 多容器认领启发式 | `containerForOwner` 以"容器内存在 `>= cutTurn` 的可见行"归属容器，依赖会话内 turn 号相对位置；两个会话恰有重叠 turn 区间时理论上可能误认领。测试场景 A[0..5]/B[1..6] 按此设计通过，真实多视图布局需 U-2 级验证。 |

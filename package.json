@@ -15,6 +15,10 @@
     "lib",
     "cordis.patch.yml"
   ],
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "test:inline": "node --experimental-test-isolation=none --test \"tests/*.test.mjs\""
+  },
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
