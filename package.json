@@ -1,0 +1,39 @@
+{
+  "name": "dsh-session-rewind",
+  "version": "0.1.0",
+  "description": "通过 /rewind 命令将当前对话折叠回退到之前的指定回合，不创建新会话，原地使用 surface replace 折叠尾部消息",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "session",
+    "rewind",
+    "history"
+  ],
+  "author": "2047727349@qq.com",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh": ">=0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "dsh.plugin.json",
+    "README.md",
+    "LICENSE"
+  ]
+}

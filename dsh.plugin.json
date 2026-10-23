@@ -1,0 +1,10 @@
+{
+  "name": "dsh-session-rewind",
+  "version": "0.1.0",
+  "description": "Session rewind plugin - 将对话折叠回退到指定回合",
+  "dsh.plugin": {
+    "compatibility": {
+      "host": ">=0.2.0"
+    }
+  }
+}
