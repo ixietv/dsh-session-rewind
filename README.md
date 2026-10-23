@@ -13,7 +13,7 @@ DSH 会话回退插件 - 通过 /rewind 命令将当前对话折叠回退到之�
 ```bash
 # 在 DSH Desktop 中通过插件管理器安装
 # 或手动克隆到插件目录
-git clone https://github.com/2047727349/dsh-session-rewind.git
+git clone https://github.com/ixietv/dsh-session-rewind.git
 ```
 
 ## 使用方法
