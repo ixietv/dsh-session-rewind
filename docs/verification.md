@@ -688,7 +688,7 @@ sha256sum plugins/dsh-session-rewind/{package.json,cordis.patch.yml} \
 |---|---|---|---|---|
 | `lib/host.js` | 34939 B / 846 行 | `476fe384c998a3a521121002ceb97e802a5e1d7e248b2f8be5264e05450eeaae` | `e8c0ac1b…` / 22195 B / 590 行 | H-1 双判据守卫 + H-2 注入与前置拒绝 |
 | `lib/client.js` | 51643 B / 1191 行 | `fbc98920e58ea9755a6bef873d35357a80cde6a2675f27ca2a710091068d62cd` | `efe9bb27…` / 41005 B / 984 行 | M-3 多容器作用域 + L-1 哨兵 + clearMark 注释 |
-| `package.json` | 1104 B / 36 行 | `0af071757d1b96bfc04abaeb73959f34f89acd79732f4ce21783868ed72b12df` | 见 §12.1 | 新增 `scripts.test` / `scripts.test:inline`；exports 四键、files、dsh 段逐字未动 |
+| `package.json` | 1104 B / 36 行 | `5194f6b8b015a030354a4113b743d18e8fec69c4b08e0bfb0d54ff2dcc99ca94` | 见 §12.1 | `version` 0.2.0→**0.2.1**（r5 发布号）；新增 `scripts.test` / `scripts.test:inline`；exports 四键、files、dsh 段逐字未动 |
 | `cordis.patch.yml` | 424 B / 10 行 | `53a4e5db30de76360c8c34829cf9eaa2b7c07f6b61207c92ec5ff816d00df617` | 同 | **逐字节未变** |
 | `docs/design.md` | 45199 B / 458 行 | `8a4a53b938c73f3efe73f1e79dca4a42a95c6055cd09df77ee72b2501d949fed` | 443 行（r2 记录）| 未改动；行数差异为历史绑定的陈旧值，本轮按实测重记（即评审 M-1 的文档漂移本身） |
 | `LICENSE` | — | 版权行改 `ixietv <2047727349@qq.com>`（评审 L-4） | 裸邮箱 | 低项 |
