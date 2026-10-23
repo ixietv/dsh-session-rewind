@@ -1,0 +1,9 @@
+# dsh-session-rewind — Loader patch.
+#
+# Inserts the Host half as one Loader row. The package name alone is enough:
+# `main` (lib/host.js) is the Host entry and `dsh.client` points the Web shell at
+# lib/client.js for the Client half. No `override`, `disabled` or `isolate`:
+# this plugin composes next to the official modules instead of replacing them.
+- insert:
+    - id: session-rewind
+      name: 'dsh-session-rewind'
